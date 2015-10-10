@@ -1,0 +1,13 @@
+module munin-puppet-plugin 1.0;
+
+require {
+	type munin_t;
+	type puppet_var_lib_t;
+	class dir search;
+	class file getattr;
+}
+
+#============= munin_t ==============
+
+allow munin_t puppet_var_lib_t:dir search;
+allow munin_t puppet_var_lib_t:file getattr;

@@ -1,0 +1,5 @@
+[puppet]
+user puppet
+env.warning 40
+env.critical 60
+env.PATH /usr/bin

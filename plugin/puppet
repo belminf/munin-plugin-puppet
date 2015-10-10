@@ -1,0 +1,54 @@
+#!/usr/bin/sh
+
+. $MUNIN_LIBDIR/plugins/plugin.sh
+
+config() {
+    echo 'graph_title Puppet'
+    echo 'graph_category puppet'
+    echo 'graph_vlabel minutes'
+
+    echo 'since_last_run.label Since last run'
+    echo 'since_last_run.min 0'
+    echo 'since_last_run.max 60'
+
+    print_warning since_last_run
+    print_critical since_last_run
+}
+
+values() {
+    printf "since_last_run.value %d\n" $(since_last_run)
+}
+
+since_last_run() {
+    expr $(expr $(date +%s) - $(date +%s -r /var/lib/puppet/state/last_run_summary.yaml)) / 60
+}
+
+usage() {
+    printf >&2 "%s - munin plugin to graph minutes between runs\n" ${0##*/}
+    printf >&2 "Usage: %s [config]\n" ${0##*/}
+}
+
+case $# in
+    0)
+        values
+        exit 0
+        ;;
+    1)
+        case $1 in
+            config)
+                config
+                ;;
+            autoconf)
+                echo yes
+                ;;
+             *)
+                usage
+                exit 1
+                ;;
+        esac
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+esac
